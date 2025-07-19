@@ -9,10 +9,11 @@ import uvicorn
 import base64
 import io
 import google.generativeai as genai
+import dotenv
 
 # Set your API Key (Replace with your actual key)
-GOOGLE_API_KEY = "AIzaSyCr35hxFrpVsbNWgqOwU6PwmkpwLmO2dJA"
-os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
+GOOGLE_API_KEY = dotenv.load_dotenv()
+os.environ[GOOGLE_API_KEY] = GOOGLE_API_KEY
 
 # Configure Google AI
 genai.configure(api_key=GOOGLE_API_KEY)
