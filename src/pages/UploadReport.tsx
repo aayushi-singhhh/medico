@@ -21,7 +21,7 @@ const UploadReport = () => {
   const [reportDate, setReportDate] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
 
-  // FastAPI backend URL - adjust this to match your backend
+  // FastAPI backend URL 
   const API_BASE_URL = "http://localhost:8000";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,8 +95,6 @@ const UploadReport = () => {
     setAbnormalities(null);
 
     try {
-      // For now, we'll analyze the first image file
-      // You can modify this to handle multiple files or different file types
       const imageFile = files.find(file => file.type.includes('image'));
       
       if (!imageFile) {
