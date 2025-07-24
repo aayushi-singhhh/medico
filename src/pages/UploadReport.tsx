@@ -13,6 +13,8 @@ const UploadReport = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
+  const [annotatedImage, setAnnotatedImage] = useState<string | null>(null);
+  const [abnormalities, setAbnormalities] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [reportType, setReportType] = useState<string>("");
   const [reportTitle, setReportTitle] = useState<string>("");
@@ -50,7 +52,8 @@ const UploadReport = () => {
     formData.append('file', file);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/analyze-image`, {
+      // Use the analyze-with-annotation endpoint to get both analysis and annotated image
+      const response = await fetch(`${API_BASE_URL}/analyze-with-annotation`, {
         method: 'POST',
         body: formData,
       });
@@ -61,7 +64,11 @@ const UploadReport = () => {
       }
 
       const result = await response.json();
-      return result.analysis;
+      return {
+        analysis: result.analysis,
+        annotatedImage: result.annotated_image,
+        abnormalities: result.abnormalities
+      };
     } catch (error) {
       console.error('Error analyzing image:', error);
       throw error;
@@ -84,6 +91,8 @@ const UploadReport = () => {
     setIsUploading(true);
     setError(null);
     setAnalysisResult(null);
+    setAnnotatedImage(null);
+    setAbnormalities(null);
 
     try {
       // For now, we'll analyze the first image file
@@ -95,9 +104,11 @@ const UploadReport = () => {
       }
 
       console.log("Starting analysis for:", imageFile.name);
-      const analysis = await analyzeImage(imageFile);
+      const result = await analyzeImage(imageFile);
       
-      setAnalysisResult(analysis);
+      setAnalysisResult(result.analysis);
+      setAnnotatedImage(result.annotatedImage);
+      setAbnormalities(result.abnormalities);
       
       // Here you could also save the report data to your database
       // const reportData = {
@@ -351,24 +362,91 @@ const UploadReport = () => {
 
         {/* Analysis Results */}
         {analysisResult && (
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>AI Analysis Results</CardTitle>
-              <CardDescription>
-                Detailed analysis of your medical image
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="prose max-w-none">
-                <div 
-                  className="whitespace-pre-wrap"
-                  dangerouslySetInnerHTML={{
-                    __html: analysisResult.replace(/\n/g, '<br/>')
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          <div className="mt-8 space-y-6">
+            {/* Annotated Image */}
+            {annotatedImage && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Annotated Medical Image</CardTitle>
+                  <CardDescription>
+                    Your medical image with AI-detected abnormalities highlighted
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-center">
+                    <img 
+                      src={annotatedImage} 
+                      alt="Annotated Medical Image" 
+                      className="max-w-full h-auto border rounded-lg shadow-lg"
+                      style={{ maxHeight: '600px' }}
+                    />
+                  </div>
+                  
+                  {/* Abnormalities Legend */}
+                  {abnormalities && abnormalities.abnormalities && abnormalities.abnormalities.length > 0 && (
+                    <div className="mt-6">
+                      <h4 className="font-semibold mb-3">Detected Abnormalities:</h4>
+                      <div className="space-y-2">
+                        {abnormalities.abnormalities.map((abnormality: any, index: number) => (
+                          <div key={index} className="flex items-start gap-3 p-3 border rounded-lg bg-gray-50">
+                            <div className={`w-4 h-4 rounded mt-0.5 ${
+                              abnormality.severity === 'High' ? 'bg-red-500' :
+                              abnormality.severity === 'Medium' ? 'bg-orange-500' :
+                              'bg-yellow-500'
+                            }`} />
+                            <div className="flex-1">
+                              <p className="font-medium">{index + 1}. {abnormality.description}</p>
+                              <p className="text-sm text-gray-600">
+                                Severity: <span className="font-medium">{abnormality.severity}</span> | 
+                                Confidence: <span className="font-medium">{abnormality.confidence}%</span>
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-4 text-sm text-gray-600">
+                        <p><strong>Legend:</strong></p>
+                        <div className="flex gap-4 mt-1">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-red-500 rounded"></div>
+                            <span>High Severity</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-orange-500 rounded"></div>
+                            <span>Medium Severity</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-yellow-500 rounded"></div>
+                            <span>Low Severity</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Analysis Text */}
+            <Card>
+              <CardHeader>
+                <CardTitle>AI Analysis Results</CardTitle>
+                <CardDescription>
+                  Detailed medical analysis of your image
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="prose max-w-none">
+                  <div 
+                    className="whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{
+                      __html: analysisResult.replace(/\n/g, '<br/>')
+                    }}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
       </div>
     </div>
