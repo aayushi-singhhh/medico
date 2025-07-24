@@ -17,8 +17,8 @@ import json
 import re
 
 # Set your API Key (Replace with your actual key)
-load_dotenv()
-GOOGLE_API_KEY=os.getenv("GOOGLE_API_KEY") 
+GOOGLE_API_KEY = "AIzaSyCr35hxFrpVsbNWgqOwU6PwmkpwLmO2dJA"
+os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
 
 # Configure Google AI
 genai.configure(api_key=GOOGLE_API_KEY)
