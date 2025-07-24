@@ -9,6 +9,7 @@ import uvicorn
 import base64
 import io
 import google.generativeai as genai
+from google.generativeai import GenerativeModel
 from dotenv import load_dotenv
 from ultralytics import YOLO
 import cv2
@@ -17,9 +18,8 @@ import json
 import re
 
 # Set your API Key (Replace with your actual key)
-GOOGLE_API_KEY = "AIzaSyCr35hxFrpVsbNWgqOwU6PwmkpwLmO2dJA"
-os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
-
+load_dotenv()
+GOOGLE_API_KEY=os.getenv("GOOGLE_API_KEY") 
 # Configure Google AI
 genai.configure(api_key=GOOGLE_API_KEY)
 detection_model = YOLO("yolov8n.pt")  
