@@ -52,10 +52,13 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 210 100% 45%;
 
-    /* Healthcare Gradients */
-    --gradient-medical: linear-gradient(135deg, hsl(210 100% 45%), hsl(145 65% 42%));
-    --gradient-hero: linear-gradient(135deg, hsl(210, 87%, 36%) 0%, hsl(210 85% 55%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 20% 98%) 100%);
+    /* Gradient colors for use in classes below */
+    --gradient-medical-from: 210 100% 45%;
+    --gradient-medical-to: 145 65% 42%;
+    --gradient-hero-from: 210 87% 36%;
+    --gradient-hero-to: 210 85% 55%;
+    --gradient-card-from: 0 0% 100%;
+    --gradient-card-to: 220 20% 98%;
 
     /* Medical Shadows */
     --shadow-medical: 0 4px 20px hsl(210 100% 45% / 0.15);
@@ -119,7 +122,7 @@
 @layer components {
   /* Medical Button Variant */
   .btn-medical {
-    background: var(--gradient-medical);
+    background: linear-gradient(135deg, hsl(var(--gradient-medical-from)), hsl(var(--gradient-medical-to)));
     color: hsl(var(--primary-foreground));
     border: none;
     box-shadow: var(--shadow-medical);
@@ -133,7 +136,7 @@
 
   /* Medical Card Styling */
   .card-medical {
-    background: var(--gradient-card);
+    background: linear-gradient(145deg, hsl(var(--gradient-card-from)), hsl(var(--gradient-card-to)));
     border: 1px solid hsl(var(--border));
     box-shadow: var(--shadow-card);
     border-radius: calc(var(--radius) + 4px);
@@ -141,11 +144,11 @@
 
   /* Gradient Backgrounds */
   .bg-gradient-medical {
-    background: var(--gradient-medical);
+    background: linear-gradient(135deg, hsl(var(--gradient-medical-from)), hsl(var(--gradient-medical-to)));
   }
 
   .bg-gradient-hero {
-    background: var(--gradient-hero);
+    background: linear-gradient(135deg, hsl(var(--gradient-hero-from)), hsl(var(--gradient-hero-to)));
   }
 
   /* Medical Status Indicators */
