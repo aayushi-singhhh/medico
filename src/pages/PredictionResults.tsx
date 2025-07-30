@@ -47,7 +47,7 @@ const MultiDiseasePredictor = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentView, setCurrentView] = useState('predict');
   
-  const API_BASE = 'http://127.0.0.1:5000';
+  const API_BASE = 'http://127.0.0.1:5001';
 
   // Enhanced disease configurations with gradients and stats
   const diseaseConfigs: Record<string, DiseaseConfig> = {
@@ -205,6 +205,27 @@ const MultiDiseasePredictor = () => {
           step: '0.1',
           min: '0',
           max: '6'
+        },
+        ST_Slope: {
+          label: 'ST Slope (0=Down, 1=Flat, 2=Up)',
+          placeholder: '0-2',
+          type: 'number',
+          min: '0',
+          max: '2'
+        },
+        Ca: {
+          label: 'Number of Major Vessels (0-4)',
+          placeholder: '0-4',
+          type: 'number',
+          min: '0',
+          max: '4'
+        },
+        Thal: {
+          label: 'Thalassemia (1=Normal, 2=Fixed, 3=Reversible)',
+          placeholder: '1-3',
+          type: 'number',
+          min: '1',
+          max: '3'
         }
       }
     },
@@ -400,7 +421,6 @@ const MultiDiseasePredictor = () => {
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-        {/* Hero Section */}
         {/* Header */}
         <header className="bg-gradient-medical text-white p-6">
           <div className="container mx-auto flex items-center gap-4">

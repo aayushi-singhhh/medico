@@ -29,7 +29,7 @@ const SimpleDiabetesPredictor = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentView, setCurrentView] = useState('predict');
 
-  const API_BASE = 'http://127.0.0.1:5000';
+  const API_BASE = 'http://127.0.0.1:5001';
 
   const handleFeatureChange = (featureName: string, value: string) => {
     setFeatures(prev => ({
