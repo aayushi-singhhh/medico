@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, FileText, Image, X, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react";
+import { Upload, FileText, Image, X, ArrowLeft, AlertCircle, CheckCircle, Lock, UserCheck, Bot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -344,14 +344,17 @@ const UploadReport = () => {
                 <CardTitle>Privacy & Security</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  🔒 Your data is encrypted and HIPAA-compliant
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Lock className="w-4 h-4" />
+                  Your data is encrypted and HIPAA-compliant
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  👨‍⚕️ Only you and your assigned doctors can access your reports
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <UserCheck className="w-4 h-4" />
+                  Only you and your assigned doctors can access your reports
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  🤖 AI analysis is performed securely on our protected servers
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Bot className="w-4 h-4" />
+                  AI analysis is performed securely on our protected servers
                 </p>
               </CardContent>
             </Card>

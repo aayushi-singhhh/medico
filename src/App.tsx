@@ -11,6 +11,7 @@ import PatientDashboard from "./pages/PatientDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import UploadReport from "./pages/UploadReport";
 import PredictionResults from "./pages/PredictionResults";
+import SimplePrediction from "./pages/SimplePrediction";
 import MedicalHistory from "./pages/MedicalHistory";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
           <Route path="/upload-report" element={<UploadReport />} />
           <Route path="/prediction-results" element={<PredictionResults />} />
+          <Route path="/simple-prediction" element={<SimplePrediction />} />
           <Route path="/medical-history" element={<MedicalHistory />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
