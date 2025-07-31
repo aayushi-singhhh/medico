@@ -17,6 +17,13 @@ diabetes_scaler = joblib.load(DIABETES_SCALER_PATH)
 HEART_MODEL_PATH = "heart_model.pkl"
 heart_model = joblib.load(HEART_MODEL_PATH)
 
+# Load pcos artifacts
+PCOS_MODEL_PATH = "pcos_model.pkl"
+PCOS_SCALER_PATH = "pcos_scaler.pkl"
+pcos_model = joblib.load(PCOS_MODEL_PATH)
+pcos_scaler = joblib.load(PCOS_SCALER_PATH)
+
+# Diabetes fields based on common diabetes datasets
 DIABETES_FIELDS = [
     "Pregnancies", "Glucose", "BloodPressure", "SkinThickness",
     "Insulin", "BMI", "DiabetesPedigreeFunction", "Age"
@@ -29,9 +36,14 @@ HEART_FIELDS = [
     "ST_Slope", "Ca", "Thal"
 ]
 
+# PCOS fields based on common PCOS datasets
+PCOS_FIELDS = [
+    "Age", "BMI", "Menstrual_Irregularity", "Testosterone_Level_ng_dL", "Antral_Follicle_Count"
+]
+
 @app.route("/health", methods=["GET"])
 def health():
-    return {"status": "ok", "diabetes_model": DIABETES_MODEL_PATH, "heart_model": HEART_MODEL_PATH}, 200
+    return {"status": "ok", "diabetes_model": DIABETES_MODEL_PATH, "heart_model": HEART_MODEL_PATH, "pcos_model": PCOS_MODEL_PATH}, 200
 
 @app.route("/predict/diabetes", methods=["POST"])
 def predict_diabetes():
@@ -59,6 +71,23 @@ def predict_heart():
         pred = int(heart_model.predict(X)[0])
         proba = float(heart_model.predict_proba(X)[0, 1])
         return jsonify({"prediction": pred, "probability": proba, "fields": HEART_FIELDS})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    
+@app.route("/predict/pcos", methods=["POST"])
+def predict_pcos():
+    try:
+        data = request.get_json(force=True)
+        values = [float(data.get(f, 0)) for f in PCOS_FIELDS]
+        
+        # Ensure we have exactly 5 features
+        if len(values) != 5:
+            return jsonify({"error": f"Expected 5 features, got {len(values)}"}), 400
+        
+        X = pcos_scaler.transform([values])
+        pred = int(pcos_model.predict(X)[0])
+        proba = float(pcos_model.predict_proba(X)[0, 1])
+        return jsonify({"prediction": pred, "probability": proba, "fields": PCOS_FIELDS})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -329,11 +329,62 @@ const MultiDiseasePredictor = () => {
           max: '2110'
         }
       }
+    },
+    pcos:{
+      name: 'PCOS Risk Assessment',
+      icon: <Stethoscope className="w-6 h-6" />,
+      color: 'text-purple-600',
+      bgGradient: 'from-purple-500 to-indigo-600',
+      description: 'Polycystic Ovary Syndrome risk prediction',
+      endpoint: '/predict/pcos',
+      stats: {
+        prevalence: '5-10% globally',
+        accuracy: '85.2% accuracy'
+      },
+      fields: {
+        Age: {
+          label: 'Age (years)',
+          placeholder: '18-90',
+          type: 'number',
+          min: '18',
+          max: '90'
+        },
+        BMI: {
+          label: 'BMI (kg/m²)',
+          placeholder: '18-40',
+          type: 'number',
+          step: '0.1',
+          min: '18',
+          max: '40'
+        },
+        Menstrual_Irregularity: {
+          label: 'Menstrual Irregularity (0=No, 1=Yes)',
+          placeholder: '0 or 1',
+          type: 'number',
+          min: '0',
+          max: '1'
+        },
+        Testosterone_Level_ng_dL: {
+          label: 'Testosterone Level (ng/dL)',
+          placeholder: '10-100',
+          type: 'number',
+          step: '0.1',
+          min: '10',
+          max: '100'
+        },
+        Antral_Follicle_Count: {
+          label: 'Antral Follicle Count',
+          placeholder: '0-30',
+          type: 'number',
+          min: '0',
+          max: '30'
+        }
+      }
     }
   };
 
   // Initialize features when component mounts or disease changes
-  React.useEffect(() => {
+  useEffect(() => {
     const newFeatures: Record<string, string> = {};
     Object.keys(diseaseConfigs[selectedDisease].fields).forEach(field => {
       newFeatures[field] = '';
