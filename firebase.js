@@ -4,7 +4,7 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCfX941vtf2T3aKi_4y3S8-8IpbBY6LsVY",
+  apiKey: "FIREBASE_API_KEY",
   authDomain: "medico-65975.firebaseapp.com",
   projectId: "medico-65975",
   storageBucket: "medico-65975.appspot.com",

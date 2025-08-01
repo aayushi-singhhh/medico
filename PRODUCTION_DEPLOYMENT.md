@@ -1,7 +1,7 @@
 # Production Deployment Guide - COMPLETED! 🎉
 
 ## ✅ Current Status
-- **Frontend**: ✅ Deployed to Vercel at `https://medico-wheat.vercel.app/`
+- **Frontend**: ✅ Deployed to Vercel at `https://medico-aayushi-singhhs-projects.vercel.app/`
 - **Backend**: ✅ Deployed to Railway at `https://medico-production-e05a.up.railway.app`
 - **CORS**: ✅ Configured to allow your Vercel frontend
 - **ML Models**: ✅ All 3 models loaded and working
