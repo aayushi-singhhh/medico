@@ -1,10 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Upload, FileText, Activity, Download, Calendar, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Upload, FileText, Activity, Download, Calendar, User, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const PatientDashboard = () => {
+  const { userData, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   const recentReports = [
     { id: 1, name: "Blood Test Results", date: "2024-01-15", status: "Completed", risk: "Low" },
     { id: 2, name: "Chest X-Ray", date: "2024-01-10", status: "Analyzed", risk: "Normal" },
@@ -23,18 +36,21 @@ const PatientDashboard = () => {
         <div className="container mx-auto flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Patient Dashboard</h1>
-            <p className="opacity-90">Welcome back, John Doe</p>
+            <p className="opacity-90">Welcome back, {userData?.firstName} {userData?.lastName}</p>
           </div>
           <div className="flex gap-4">
             <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
               <User className="w-4 h-4 mr-2" />
               Profile
             </Button>
-            <Link to="/">
-              <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                Logout
-              </Button>
-            </Link>
+            <Button 
+              onClick={handleLogout}
+              variant="outline" 
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
           </div>
         </div>
       </header>

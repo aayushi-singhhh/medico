@@ -3,9 +3,24 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
 import numpy as np
+import os
 
 app = Flask(__name__)
-CORS(app)  # allows your React dev server to call this API
+
+# Configure CORS for production and development
+allowed_origins = [
+    "http://localhost:3000",
+    "http://localhost:8080", 
+    "http://localhost:8081",
+    "http://localhost:8082",
+    "https://your-vercel-app.vercel.app"  # Replace with your actual Vercel URL
+]
+
+# Add environment variable for production domain
+if os.environ.get("FRONTEND_URL"):
+    allowed_origins.append(os.environ.get("FRONTEND_URL"))
+
+CORS(app, origins=allowed_origins)
 
 # Load diabetes artifacts
 DIABETES_MODEL_PATH = "diabetes_model.pkl"
@@ -92,4 +107,7 @@ def predict_pcos():
         return jsonify({"error": str(e)}), 400
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5001, debug=True)
+    import os
+    port = int(os.environ.get("PORT", 5001))
+    debug = os.environ.get("FLASK_ENV") != "production"
+    app.run(host="0.0.0.0", port=port, debug=debug)

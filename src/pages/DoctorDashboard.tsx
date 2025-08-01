@@ -3,9 +3,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Users, FileText, Activity, Search, Calendar, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { useEffect } from "react";
 
 const DoctorDashboard = () => {
+  const { user, userData, logout } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is authenticated and has doctor role
+    if (!user || !userData) {
+      navigate("/login?role=doctor");
+      return;
+    }
+
+    if (userData.role !== "doctor") {
+      navigate("/login?role=doctor");
+      return;
+    }
+
+    // Check if doctor profile is complete
+    if (!userData.license || !userData.specialization) {
+      navigate("/doctor-profile-completion");
+      return;
+    }
+  }, [user, userData, navigate]);
+
   const patients = [
     { id: 1, name: "John Doe", age: 45, lastVisit: "2024-01-15", condition: "Hypertension", risk: "Medium" },
     { id: 2, name: "Sarah Johnson", age: 32, lastVisit: "2024-01-14", condition: "Diabetes", risk: "High" },
@@ -31,18 +55,24 @@ const DoctorDashboard = () => {
         <div className="container mx-auto flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Doctor Dashboard</h1>
-            <p className="opacity-90">Dr. Sarah Williams - Cardiology</p>
+            <p className="opacity-90">
+              Dr. {userData?.firstName} {userData?.lastName} - {userData?.specialization || "General Practice"}
+            </p>
           </div>
           <div className="flex gap-4">
-            <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-              <User className="w-4 h-4 mr-2" />
-              Profile
-            </Button>
-            <Link to="/">
+            <Link to="/doctor-profile-completion">
               <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                Logout
+                <User className="w-4 h-4 mr-2" />
+                Profile
               </Button>
             </Link>
+            <Button 
+              variant="outline" 
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+              onClick={logout}
+            >
+              Logout
+            </Button>
           </div>
         </div>
       </header>

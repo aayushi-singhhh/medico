@@ -1,74 +1,105 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, Brain, Users } from "lucide-react";
+import { ArrowRight, Shield, Brain, Users, Heart, Activity, MapPin, UserCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroImage from "../assets/healthcare-hero.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center bg-gradient-hero overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src={heroImage} 
-          alt="Healthcare Technology" 
-          className="w-full h-full object-cover opacity-20"
-        />
-        <div className="absolute inset-0 bg-gradient-hero opacity-90" />
-      </div>
-      
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 py-20">
+    <section className="min-h-screen flex items-center bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700">
+      <div className="container mx-auto px-6 py-20">
         <div className="max-w-4xl mx-auto text-center text-white">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-6 py-2 mb-8 backdrop-blur-sm">
+            <Heart className="w-4 h-4 text-red-400" />
+            <span className="text-sm font-medium">Trusted by 50,000+ patients worldwide</span>
+          </div>
+
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Unified AI-Powered 
-            <span className="block bg-gradient-to-r from-white to-accent bg-clip-text text-transparent">
-              Smart Healthcare Platform
+            The Future of{" "}
+            <span className="text-cyan-400">
+              AI Healthcare
             </span>
+            {" "}is Here
           </h1>
           
-          <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Connecting hospitals, doctors, and patients through intelligent health management, 
-            AI-powered diagnostics, and comprehensive medical record systems.
+          <p className="text-xl md:text-2xl mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed">
+            Experience revolutionary AI-powered diagnostics that provide instant, accurate health insights. 
+            Connect with healthcare professionals through our comprehensive medical platform.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Link to="/register">
-              <Button variant="hero" className="group">
-                Get Started
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+            <Link to="/prediction-results">
+              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-3 rounded-full">
+                Try AI Diagnosis
+                <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
-            <Link to="/login">
-              <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                Learn More
+            <Link to="/login?role=patient">
+              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-full">
+                <UserCircle className="mr-2 w-4 h-4" />
+                Patient Login
+              </Button>
+            </Link>
+            <Link to="/nearby-services">
+              <Button 
+                variant="outline" 
+                className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-full"
+              >
+                <MapPin className="mr-2 w-4 h-4" />
+                Find Nearby Services
               </Button>
             </Link>
           </div>
           
           {/* Feature Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mt-16">
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 shadow-card hover:shadow-hover transition-all duration-300 transform hover:scale-105">
-              <div className="bg-accent rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+          <div className="grid md:grid-cols-3 gap-8 mt-16">
+            <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
+              <div className="bg-blue-500 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                 <Brain className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">AI Diagnostics</h3>
-              <p className="opacity-80">Advanced machine learning for disease prediction and medical image analysis</p>
+              <h3 className="text-xl font-semibold mb-2">Smart AI Diagnostics</h3>
+              <p className="opacity-90">
+                Advanced machine learning algorithms analyze your health data with 94.2% accuracy
+              </p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 shadow-card hover:shadow-hover transition-all duration-300 transform hover:scale-105">
-              <div className="bg-accent rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+            <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
+              <div className="bg-purple-500 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                 <Shield className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Secure Platform</h3>
-              <p className="opacity-80">HIPAA-compliant data protection with role-based access control</p>
+              <h3 className="text-xl font-semibold mb-2">Enterprise Security</h3>
+              <p className="opacity-90">
+                HIPAA-compliant platform with end-to-end encryption ensuring your data stays secure
+              </p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 shadow-card hover:shadow-hover transition-all duration-300 transform hover:scale-105">
-              <div className="bg-accent rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+            <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
+              <div className="bg-green-500 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                 <Users className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Unified Access</h3>
-              <p className="opacity-80">Connecting patients, doctors, and healthcare providers seamlessly</p>
+              <h3 className="text-xl font-semibold mb-2">Connected Care</h3>
+              <p className="opacity-90">
+                Seamlessly connect patients, doctors, and healthcare providers in one platform
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-cyan-400">94.2%</div>
+              <div className="text-white/70 text-sm">AI Accuracy</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-purple-400">50K+</div>
+              <div className="text-white/70 text-sm">Patients</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-green-400">&lt;2s</div>
+              <div className="text-white/70 text-sm">Response Time</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-yellow-400">100%</div>
+              <div className="text-white/70 text-sm">Secure</div>
             </div>
           </div>
         </div>
