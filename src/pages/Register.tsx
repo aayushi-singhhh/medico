@@ -331,19 +331,6 @@ const Register = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="doctor-phone" className="text-sm font-medium text-gray-700">Phone Number</Label>
-                    <Input 
-                      id="doctor-phone" 
-                      name="phone"
-                      type="tel" 
-                      placeholder="+1 (555) 000-0000" 
-                      required 
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div className="space-y-2">
                     <Label htmlFor="doctor-license" className="text-sm font-medium text-gray-700">Medical License</Label>
                     <Input 
                       id="doctor-license" 
