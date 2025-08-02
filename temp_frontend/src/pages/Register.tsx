@@ -4,14 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserCircle, Stethoscope } from "lucide-react";
+import { UserCircle, Stethoscope, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../../firebase";
+import { auth, db } from "../firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "../contexts/AuthContext";
 import GoogleAuthButton from "../components/GoogleAuthButton";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,10 +21,16 @@ const Register = () => {
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
     phone: "",
     license: "",
     specialization: ""
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [searchParams] = useSearchParams();
   const defaultRole = searchParams.get("role") || "patient";
   const navigate = useNavigate();
@@ -42,20 +49,97 @@ const Register = () => {
   }, [user, userData, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
+    
+    // Clear errors when user types
+    if (name === "password") {
+      setPasswordError("");
+      if (formData.confirmPassword && value !== formData.confirmPassword) {
+        setConfirmPasswordError("Passwords don't match");
+      } else {
+        setConfirmPasswordError("");
+      }
+    }
+    
+    if (name === "confirmPassword") {
+      if (value !== formData.password) {
+        setConfirmPasswordError("Passwords don't match");
+      } else {
+        setConfirmPasswordError("");
+      }
+    }
+    
+    if (name === "phone") {
+      setPhoneError("");
+    }
   };
 
+  const validatePassword = (password: string) => {
+    if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long");
+      return false;
+    }
+    if (!/[A-Z]/.test(password)) {
+      setPasswordError("Password must contain at least one uppercase letter");
+      return false;
+    }
+    if (!/[0-9]/.test(password)) {
+      setPasswordError("Password must contain at least one number");
+      return false;
+    }
+    return true;
+  };
+  
+  const validatePhone = (phone: string) => {
+    // Simple validation - can be enhanced with country-specific patterns
+    const phoneRegex = /^\+?[0-9]{10,15}$/;
+    if (!phoneRegex.test(phone)) {
+      setPhoneError("Please enter a valid phone number");
+      return false;
+    }
+    return true;
+  };
+  
   const handleSubmit = async (e: React.FormEvent, role: string) => {
     e.preventDefault();
+    
+    // Validate form
+    if (!validatePassword(formData.password)) {
+      return;
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      setConfirmPasswordError("Passwords don't match");
+      return;
+    }
+    
+    if (!validatePhone(formData.phone)) {
+      return;
+    }
+    
+    if (!agreeToTerms) {
+      toast({
+        title: "Terms required",
+        description: "You must agree to the terms of service",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
       // Create user with Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       const user = userCredential.user;
+      
+      // Send email verification
+      await sendEmailVerification(user);
 
       // Prepare user data for Firestore
       const userData: any = {
@@ -80,15 +164,19 @@ const Register = () => {
 
       toast({
         title: "Registration successful!",
-        description: "Your account has been created. Please log in.",
+        description: "Please check your email to verify your account before logging in.",
       });
 
       // Navigate to login page
       navigate("/login");
     } catch (error: any) {
+      const errorMessage = error.code === 'auth/email-already-in-use' 
+        ? "This email is already registered. Please log in or use a different email."
+        : error.message;
+        
       toast({
         title: "Registration failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -98,62 +186,13 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Panel - Role-specific imagery */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-600 via-blue-600 to-purple-700 relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
+      {/* Left Panel - Background Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd2e?auto=format&fit=crop&w=900&q=80" alt="Register Healthcare" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-green-700 via-blue-700 to-purple-900 opacity-80"></div>
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white text-center">
-          <Tabs defaultValue={defaultRole} className="w-full max-w-md">
-            <TabsContent value="patient" className="space-y-6">
-              <div className="w-32 h-32 mx-auto bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <UserCircle className="w-16 h-16" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold mb-4">Join as Patient</h2>
-                <p className="text-lg opacity-90 leading-relaxed">
-                  Take control of your health journey with our comprehensive digital healthcare platform.
-                </p>
-              </div>
-              <div className="space-y-3 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>Secure medical record storage</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>AI-powered health insights</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>Easy appointment scheduling</span>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="doctor" className="space-y-6">
-              <div className="w-32 h-32 mx-auto bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <Stethoscope className="w-16 h-16" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold mb-4">Join as Doctor</h2>
-                <p className="text-lg opacity-90 leading-relaxed">
-                  Enhance your medical practice with our advanced diagnostic and patient management tools.
-                </p>
-              </div>
-              <div className="space-y-3 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>Advanced diagnostic tools</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>Patient management system</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>AI-assisted consultations</span>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+          <h2 className="text-4xl font-extrabold mb-4 drop-shadow-lg">Join Medico</h2>
+          <p className="text-lg opacity-90 mb-8 max-w-md">Create your account and experience next-gen healthcare for patients and doctors.</p>
         </div>
       </div>
 
@@ -254,15 +293,62 @@ const Register = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="patient-password" className="text-sm font-medium text-gray-700">Password</Label>
+                    <div className="relative">
+                      <Input 
+                        id="patient-password" 
+                        name="password"
+                        type={showPassword ? "text" : "password"} 
+                        required 
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className={`h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 pr-10 ${passwordError ? "border-red-500" : ""}`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {passwordError && (
+                      <p className="text-sm text-red-500 mt-1">{passwordError}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="patient-confirm-password" className="text-sm font-medium text-gray-700">Confirm Password</Label>
                     <Input 
-                      id="patient-password" 
-                      name="password"
+                      id="patient-confirm-password" 
+                      name="confirmPassword"
                       type="password" 
                       required 
-                      value={formData.password}
+                      value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      className={`h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${confirmPasswordError ? "border-red-500" : ""}`}
                     />
+                    {confirmPasswordError && (
+                      <p className="text-sm text-red-500 mt-1">{confirmPasswordError}</p>
+                    )}
+                  </div>
+                  <div className="flex items-center space-x-2 mt-4">
+                    <Checkbox 
+                      id="terms" 
+                      checked={agreeToTerms} 
+                      onCheckedChange={(checked) => setAgreeToTerms(checked as boolean)}
+                    />
+                    <label
+                      htmlFor="terms"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-600"
+                    >
+                      I agree to the{" "}
+                      <Link to="/terms" className="text-blue-600 hover:underline">
+                        Terms of Service
+                      </Link>{" "}
+                      and{" "}
+                      <Link to="/privacy" className="text-blue-600 hover:underline">
+                        Privacy Policy
+                      </Link>
+                    </label>
                   </div>
                   <Button 
                     className="w-full h-12 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02]" 
@@ -331,6 +417,19 @@ const Register = () => {
                     />
                   </div>
                   <div className="space-y-2">
+                    <Label htmlFor="doctor-phone" className="text-sm font-medium text-gray-700">Phone Number</Label>
+                    <Input 
+                      id="doctor-phone" 
+                      name="phone"
+                      type="tel" 
+                      placeholder="+1 (555) 000-0000" 
+                      required 
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="doctor-license" className="text-sm font-medium text-gray-700">Medical License</Label>
                     <Input 
                       id="doctor-license" 
@@ -356,15 +455,62 @@ const Register = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="doctor-password" className="text-sm font-medium text-gray-700">Password</Label>
+                    <div className="relative">
+                      <Input 
+                        id="doctor-password" 
+                        name="password"
+                        type={showPassword ? "text" : "password"} 
+                        required 
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className={`h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 pr-10 ${passwordError ? "border-red-500" : ""}`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {passwordError && (
+                      <p className="text-sm text-red-500 mt-1">{passwordError}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="doctor-confirm-password" className="text-sm font-medium text-gray-700">Confirm Password</Label>
                     <Input 
-                      id="doctor-password" 
-                      name="password"
+                      id="doctor-confirm-password" 
+                      name="confirmPassword"
                       type="password" 
                       required 
-                      value={formData.password}
+                      value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      className={`h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${confirmPasswordError ? "border-red-500" : ""}`}
                     />
+                    {confirmPasswordError && (
+                      <p className="text-sm text-red-500 mt-1">{confirmPasswordError}</p>
+                    )}
+                  </div>
+                  <div className="flex items-center space-x-2 mt-4">
+                    <Checkbox 
+                      id="terms" 
+                      checked={agreeToTerms} 
+                      onCheckedChange={(checked) => setAgreeToTerms(checked as boolean)}
+                    />
+                    <label
+                      htmlFor="terms"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-600"
+                    >
+                      I agree to the{" "}
+                      <Link to="/terms" className="text-blue-600 hover:underline">
+                        Terms of Service
+                      </Link>{" "}
+                      and{" "}
+                      <Link to="/privacy" className="text-blue-600 hover:underline">
+                        Privacy Policy
+                      </Link>
+                    </label>
                   </div>
                   <Button 
                     className="w-full h-12 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02]" 

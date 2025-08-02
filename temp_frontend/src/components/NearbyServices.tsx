@@ -5,6 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Phone, Star, Navigation, Hospital, Pill, TestTube, Stethoscope } from "lucide-react";
 import { Loader } from '@googlemaps/js-api-loader';
 
+interface ImportMetaEnv {
+  VITE_GOOGLE_MAPS_API_KEY?: string;
+}
+
+interface ImportMeta {
+  env: ImportMetaEnv;
+}
+
 interface Place {
   place_id: string;
   name: string;
@@ -81,97 +89,11 @@ const NearbyServices = () => {
   // Find nearby places using Google Places API
   const findNearbyPlaces = async (location: { lat: number; lng: number }, serviceType: string, specialty?: string) => {
     // Check if Google Maps API key is available
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    const apiKey = (import.meta as any).env?.VITE_GOOGLE_MAPS_API_KEY;
     
     if (!apiKey) {
-      console.warn('Google Maps API key not found. Using mock data.');
-      // Enhanced mock data with doctor specialties
-      const getMockPlaces = () => {
-        if (serviceType === 'doctor') {
-          const selectedSpec = doctorSpecialties.find(s => s.id === specialty) || doctorSpecialties[0];
-          const doctorNames = {
-            general: ['Dr. Sarah Johnson', 'Dr. Michael Chen', 'Dr. Emily Rodriguez'],
-            cardiologist: ['Dr. Robert Heart', 'Dr. Lisa Cardiac', 'Dr. James Pulse'],
-            dermatologist: ['Dr. Anna Skin', 'Dr. Mark Derma', 'Dr. Sophie Clear'],
-            pediatrician: ['Dr. Jessica Kids', 'Dr. Tommy Child', 'Dr. Amy Young'],
-            orthopedic: ['Dr. Strong Bone', 'Dr. Joint Smith', 'Dr. Spine Wilson'],
-            neurologist: ['Dr. Brain Smart', 'Dr. Neuro Think', 'Dr. Mind Sharp'],
-            gynecologist: ['Dr. Women Care', 'Dr. Female Health', 'Dr. Lady Doctor'],
-            psychiatrist: ['Dr. Mental Peace', 'Dr. Mind Calm', 'Dr. Therapy Hope'],
-            ophthalmologist: ['Dr. Eye Bright', 'Dr. Vision Clear', 'Dr. Sight Perfect'],
-            dentist: ['Dr. Tooth White', 'Dr. Smile Bright', 'Dr. Dental Care']
-          };
-          
-          const names = doctorNames[selectedSpec.id as keyof typeof doctorNames] || doctorNames.general;
-          
-          return names.map((name, index) => ({
-            place_id: `doctor_${index + 1}`,
-            name: `${name}, ${selectedSpec.name}`,
-            vicinity: [
-              '123 Medical Plaza, Suite 201',
-              '456 Health Center, Floor 3', 
-              '789 Wellness Avenue, Building B'
-            ][index] || '555 Medical Drive',
-            rating: [4.8, 4.6, 4.9][index] || 4.5,
-            formatted_phone_number: [
-              '+1 (555) 123-4567',
-              '+1 (555) 987-6543', 
-              '+1 (555) 456-7890'
-            ][index] || '+1 (555) 000-0000',
-            geometry: {
-              location: {
-                lat: location.lat + (index === 0 ? 0.01 : index === 1 ? -0.01 : 0.02),
-                lng: location.lng + (index === 0 ? 0.01 : index === 1 ? -0.01 : -0.02)
-              }
-            },
-            types: ['doctor', 'health'],
-            business_status: 'OPERATIONAL'
-          }));
-        } else {
-          return [
-            {
-              place_id: '1',
-              name: `${serviceType === 'hospital' ? 'City General Hospital' : 
-                      serviceType === 'pharmacy' ? 'Medicare Pharmacy' : 
-                      'QuickTest Laboratory'}`,
-              vicinity: '123 Main Street, Downtown',
-              rating: 4.5,
-              formatted_phone_number: '+1 (555) 123-4567',
-              geometry: {
-                location: {
-                  lat: location.lat + 0.01,
-                  lng: location.lng + 0.01
-                }
-              },
-              types: [serviceType, 'health'],
-              business_status: 'OPERATIONAL'
-            },
-            {
-              place_id: '2',
-              name: `${serviceType === 'hospital' ? 'Metro Medical Center' : 
-                      serviceType === 'pharmacy' ? 'HealthMart Pharmacy' : 
-                      'Precision Labs'}`,
-              vicinity: '456 Oak Avenue, Midtown',
-              rating: 4.2,
-              formatted_phone_number: '+1 (555) 987-6543',
-              geometry: {
-                location: {
-                  lat: location.lat - 0.01,
-                  lng: location.lng - 0.01
-                }
-              },
-              types: [serviceType, 'health'],
-              business_status: 'OPERATIONAL'
-            }
-          ];
-        }
-      };
-
-      setPlaces(getMockPlaces());
-      setLoading(false);
-      return;
+      console.warn('Google Maps API key not found.');
     }
-
     // Real Google Maps API implementation
     const loader = new Loader({
       apiKey: apiKey,
@@ -382,7 +304,7 @@ const NearbyServices = () => {
             <p className="text-sm text-gray-500">
               {(import.meta as any).env?.VITE_GOOGLE_MAPS_API_KEY ? 
                 'Using Google Places API for real-time results. Doctors can be filtered by specialty for precise search results.' :
-                'Note: Currently using demo data with specialty-specific doctors. Add VITE_GOOGLE_MAPS_API_KEY to your .env file for real Google Places API integration.'
+                'Note: Add VITE_GOOGLE_MAPS_API_KEY to your .env file for real Google Places API integration.'
               }
             </p>
           </div>

@@ -66,61 +66,45 @@ const MultiDiseasePredictor = () => {
       fields: {
         Pregnancies: {
           label: 'Number of Pregnancies',
-          placeholder: '0-17',
-          type: 'number',
-          min: '0',
-          max: '17'
+          placeholder: 'Enter value',
+          type: 'number'
         },
         Glucose: {
           label: 'Glucose Level (mg/dL)',
-          placeholder: '0-200',
-          type: 'number',
-          min: '0',
-          max: '200'
+          placeholder: 'Enter value',
+          type: 'number'
         },
         BloodPressure: {
           label: 'Blood Pressure (mm Hg)',
-          placeholder: '0-122',
-          type: 'number',
-          min: '0',
-          max: '122'
+          placeholder: 'Enter value',
+          type: 'number'
         },
         SkinThickness: {
           label: 'Skin Thickness (mm)',
-          placeholder: '0-100',
+          placeholder: 'Enter value',
           type: 'number',
-          min: '0',
-          max: '100'
         },
         Insulin: {
           label: 'Insulin Level (mu U/ml)',
-          placeholder: '0-846',
-          type: 'number',
-          min: '0',
-          max: '846'
+          placeholder: 'Enter value',
+          type: 'number'
         },
         BMI: {
           label: 'Body Mass Index',
-          placeholder: '0.0-67.1',
+          placeholder: 'Enter value',
           type: 'number',
           step: '0.1',
-          min: '0',
-          max: '67.1'
         },
         DiabetesPedigreeFunction: {
           label: 'Diabetes Pedigree Function',
-          placeholder: '0.078-2.42',
+          placeholder: 'Enter value',
           type: 'number',
           step: '0.001',
-          min: '0.078',
-          max: '2.42'
         },
         Age: {
           label: 'Age (years)',
-          placeholder: '21-81',
-          type: 'number',
-          min: '21',
-          max: '81'
+          placeholder: 'Enter value',
+          type: 'number'
         }
       }
     },
@@ -138,14 +122,12 @@ const MultiDiseasePredictor = () => {
       fields: {
         Age: {
           label: 'Age (years)',
-          placeholder: '20-80',
-          type: 'number',
-          min: '20',
-          max: '80'
+          placeholder: 'Enter value',
+          type: 'number'
         },
         Sex: {
           label: 'Sex (1=Male, 0=Female)',
-          placeholder: '0 or 1',
+          placeholder: 'Enter value',
           type: 'number',
           min: '0',
           max: '1'
@@ -159,38 +141,32 @@ const MultiDiseasePredictor = () => {
         },
         RestingBP: {
           label: 'Resting Blood Pressure (mm Hg)',
-          placeholder: '80-200',
-          type: 'number',
-          min: '80',
-          max: '200'
+          placeholder: 'Enter value',
+          type: 'number'
         },
         Cholesterol: {
           label: 'Cholesterol Level (mg/dL)',
-          placeholder: '100-600',
-          type: 'number',
-          min: '100',
-          max: '600'
+          placeholder: 'Enter value',
+          type: 'number'
         },
         FastingBS: {
           label: 'Fasting Blood Sugar >120 (1=Yes, 0=No)',
-          placeholder: '0 or 1',
+          placeholder: 'Enter value',
           type: 'number',
           min: '0',
           max: '1'
         },
         RestingECG: {
           label: 'Resting ECG (0-2)',
-          placeholder: '0-2',
+          placeholder: 'Enter value',
           type: 'number',
           min: '0',
           max: '2'
         },
         MaxHR: {
           label: 'Maximum Heart Rate',
-          placeholder: '60-220',
-          type: 'number',
-          min: '60',
-          max: '220'
+          placeholder: 'Enter value',
+          type: 'number'
         },
         ExerciseAngina: {
           label: 'Exercise Induced Angina (1=Yes, 0=No)',

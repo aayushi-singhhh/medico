@@ -8,7 +8,7 @@ import { UserCircle, Stethoscope } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../../firebase";
+import { auth, db } from "../firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "../contexts/AuthContext";
 import GoogleAuthButton from "../components/GoogleAuthButton";

@@ -1,0 +1,175 @@
+{
+  "app": {
+    "title": "Medico",
+    "description": "Healthcare application"
+  },
+  "navigation": {
+    "home": "Home",
+    "services": "Services",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "profile": "Profile"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone Number",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signUp": "Sign up",
+    "signIn": "Sign in",
+    "googleSignIn": "Sign in with Google",
+    "googleSignUp": "Sign up with Google",
+    "agreeToTerms": "I agree to the terms and conditions",
+    "passwordMismatch": "Passwords do not match",
+    "welcomeTo": "Welcome to",
+    "appDescription": "AI-powered healthcare for patients and doctors. Secure, smart, and easy to use.",
+    "welcomeBack": "Welcome back to",
+    "signInAs": "Sign In as {{role}}",
+    "signingIn": "Signing in...",
+    "orContinueWithEmail": "Or continue with email",
+    "loginFailed": "Login failed",
+    "invalidCredentials": "Invalid email or password. Please try again.",
+    "loginSuccessful": "Login successful!",
+    "welcomeBackUser": "Welcome back, {{name}}!",
+    "accessDenied": "Access denied",
+    "registeredAsRole": "You are registered as a {{currentRole}}, not a {{attemptedRole}}.",
+    "userDataNotFound": "User data not found",
+    "pleaseContactSupport": "Please contact support.",
+    "joinMedico": "Join Medico",
+    "joinDescription": "Create your account and experience next-gen healthcare for patients and doctors.",
+    "createAccount": "Create Account",
+    "joinHealthcarePlatform": "Join our healthcare platform",
+    "orRegisterWithEmail": "Or register with email",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "agreeToTermsAndPrivacy": "I agree to the {{terms}} and {{privacy}}",
+    "licenseNumber": "License Number",
+    "specialization": "Specialization",
+    "selectSpecialization": "Select your specialization",
+    "createPatientAccount": "Create Patient Account",
+    "createDoctorAccount": "Create Doctor Account",
+    "patientRegistration": "Patient Registration",
+    "doctorRegistration": "Doctor Registration",
+    "firstNamePlaceholder": "John",
+    "lastNamePlaceholder": "Doe", 
+    "emailPlaceholder": "john@example.com",
+    "phonePlaceholder": "+1 (555) 000-0000",
+    "doctorFirstNamePlaceholder": "Dr. Jane",
+    "doctorLastNamePlaceholder": "Smith",
+    "doctorEmailPlaceholder": "doctor@hospital.com",
+    "licenseNumberPlaceholder": "License Number",
+    "specializationPlaceholder": "e.g., Cardiology",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPasswordPlaceholder": "Confirm your password"
+  },
+  "roles": {
+    "patient": "Patient",
+    "doctor": "Doctor"
+  },
+  "hero": {
+    "badge": "Trusted by 50,000+ patients worldwide",
+    "title": "The Future of AI Healthcare is Here",
+    "subtitle": "Experience revolutionary AI-powered diagnostics that provide instant, accurate health insights. Connect with healthcare professionals through our comprehensive medical platform.",
+    "tryAiDiagnosis": "Try AI Diagnosis",
+    "patientLogin": "Patient Login",
+    "findNearbyServices": "Find Nearby Services"
+  },
+  "stats": {
+    "aiAccuracy": "AI Accuracy",
+    "patientsServed": "Patients Served",
+    "healthcareProviders": "Healthcare Providers",
+    "diseaseModels": "Disease Models"
+  },
+  "cta": {
+    "title": "Ready to Transform Your Healthcare Experience?",
+    "subtitle": "Join thousands of patients and healthcare providers who trust Medico for accurate, AI-powered medical insights.",
+    "startJourney": "Start Your Health Journey",
+    "scheduleDemo": "Schedule a Demo"
+  },
+  "roleSelection": {
+    "title": "Choose Your Role",
+    "subtitle": "Select your role to access personalized healthcare features tailored to your needs",
+    "patient": {
+      "title": "Patient Portal",
+      "description": "Take control of your health with AI-powered insights and comprehensive medical record management",
+      "features": [
+        "Upload medical reports & images instantly",
+        "AI disease risk assessment in seconds",
+        "Personal health timeline with trends",
+        "Download complete medical history"
+      ]
+    },
+    "doctor": {
+      "title": "Doctor Dashboard", 
+      "description": "Enhance your practice with AI diagnostic assistance and comprehensive patient management tools",
+      "features": [
+        "View complete patient medical histories",
+        "AI diagnostic assistance & recommendations", 
+        "Add detailed consultation notes",
+        "Generate comprehensive patient reports"
+      ]
+    },
+    "admin": {
+      "title": "Hospital Admin",
+      "description": "Streamline healthcare operations with advanced analytics and comprehensive system management",
+      "features": [
+        "Manage doctors & patients efficiently",
+        "Real-time platform monitoring",
+        "Advanced analytics dashboard", 
+        "System administration tools"
+      ]
+    },
+    "getStarted": "Get Started"
+  },
+  "nearbyServices": {
+    "title": "Find Nearby Medical Services",
+    "subtitle": "Discover hospitals, pharmacies, laboratories, and clinics in your area with our GPS-powered location service",
+    "howItWorks": "How It Works",
+    "shareLocation": "Share Location",
+    "shareLocationDesc": "Allow location access to find medical services near you",
+    "searchServices": "Search Services",
+    "searchServicesDesc": "Choose the type of medical service you need",
+    "getDirections": "Get Directions",
+    "getDirectionsDesc": "View results and get directions through Google Maps",
+    "emergency": "Emergency Services",
+    "emergencyDesc": "In case of emergency, call these numbers immediately:",
+    "emergencyNumber": "Emergency",
+    "poisonControl": "Poison Control",
+    "crisisHelpline": "Crisis Helpline"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "appointments": "Appointments",
+    "medicalRecords": "Medical Records",
+    "prescriptions": "Prescriptions",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "viewAll": "View All",
+    "book": "Book Appointment"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "profile": "Profile Settings",
+    "security": "Security & Privacy",
+    "theme": "Theme",
+    "english": "English",
+    "hindi": "Hindi",
+    "toggleLanguage": "Toggle language",
+    "switchToEnglish": "Switch to English",
+    "switchToHindi": "Switch to Hindi",
+    "translated": "Translated"
+  }
+}

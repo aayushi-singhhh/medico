@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.venv/
+PRODUCTION_DEPLOYMENT.md
+CLEANUP_SUMMARY.md
+firebase.js

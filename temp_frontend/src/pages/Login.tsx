@@ -8,10 +8,11 @@ import { UserCircle, Stethoscope } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../../firebase";
+import { auth, db } from "../firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "../contexts/AuthContext";
 import GoogleAuthButton from "../components/GoogleAuthButton";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +23,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, userData } = useAuth();
+  const { t } = useTranslation();
 
   // Redirect if already logged in
   useEffect(() => {
@@ -39,22 +41,27 @@ const Login = () => {
     setIsLoading(true);
 
     try {
+      console.log("Login attempt with:", { email, role });
       // Sign in with Firebase Auth
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      console.log("Firebase auth successful:", user.uid);
 
       // Get user role from Firestore
+      console.log("Fetching user document from Firestore...");
       const userDoc = await getDoc(doc(db, "users", user.uid));
-      
+      console.log("Firestore response:", userDoc.exists() ? "Document exists" : "No document found");
+
       if (userDoc.exists()) {
         const userData = userDoc.data();
         const userRole = userData.role;
+        console.log("User data retrieved:", { role: userRole, firstName: userData.firstName });
 
         // Check if the selected role matches the user's actual role
         if (userRole === role) {
           toast({
-            title: "Login successful!",
-            description: `Welcome back, ${userData.firstName}!`,
+            title: t('auth.loginSuccessful'),
+            description: t('auth.welcomeBackUser', { name: userData.firstName }),
           });
 
           // Navigate to appropriate dashboard
@@ -65,22 +72,29 @@ const Login = () => {
           }
         } else {
           toast({
-            title: "Access denied",
-            description: `You are registered as a ${userRole}, not a ${role}.`,
+            title: t('auth.accessDenied'),
+            description: t('auth.registeredAsRole', { currentRole: t(`roles.${userRole}`), attemptedRole: t(`roles.${role}`) }),
             variant: "destructive",
           });
         }
       } else {
         toast({
-          title: "User data not found",
-          description: "Please contact support.",
+          title: t('auth.userDataNotFound'),
+          description: t('auth.pleaseContactSupport'),
           variant: "destructive",
         });
       }
     } catch (error: any) {
+      console.error("Login error details:", error);
+      let errorMessage = error.message;
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        errorMessage = t('auth.invalidCredentials');
+      } else if (error.code === 'auth/invalid-credential') {
+        errorMessage = t('auth.invalidCredentials');
+      }
       toast({
-        title: "Login failed",
-        description: error.message,
+        title: t('auth.loginFailed'),
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -90,98 +104,38 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Panel - Role-specific imagery */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
+      {/* Left Panel - Background Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80" alt="Healthcare" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-purple-700 to-indigo-900 opacity-80"></div>
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white text-center">
-          <Tabs defaultValue={defaultRole} className="w-full max-w-md">
-            <TabsContent value="patient" className="space-y-6">
-              <div className="w-32 h-32 mx-auto bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <UserCircle className="w-16 h-16" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold mb-4">Patient Portal</h2>
-                <p className="text-lg opacity-90 leading-relaxed">
-                  Access your complete medical history, upload reports, and get AI-powered health insights all in one secure platform.
-                </p>
-              </div>
-              <div className="space-y-3 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>Upload medical reports instantly</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>AI disease risk assessment</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>Complete health timeline</span>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="doctor" className="space-y-6">
-              <div className="w-32 h-32 mx-auto bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <Stethoscope className="w-16 h-16" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold mb-4">Doctor Dashboard</h2>
-                <p className="text-lg opacity-90 leading-relaxed">
-                  Enhance your practice with AI diagnostic assistance and comprehensive patient management tools.
-                </p>
-              </div>
-              <div className="space-y-3 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>AI diagnostic assistance</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>Patient management tools</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                  <span>Comprehensive reports</span>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+          <h2 className="text-4xl font-extrabold mb-4 drop-shadow-lg">{t('auth.welcomeTo')} {t('app.title')}</h2>
+          <p className="text-lg opacity-90 mb-8 max-w-md">{t('auth.appDescription')}</p>
         </div>
       </div>
-
       {/* Right Panel - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-gray-50">
-        <Card className="w-full max-w-md bg-white shadow-xl border-0">
+        <Card className="w-full max-w-md bg-white shadow-2xl rounded-3xl border-0">
           <CardHeader className="text-center pb-6">
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Welcome Back
+            <CardTitle className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+              {t('auth.signIn')}
             </CardTitle>
-            <CardDescription className="text-lg text-gray-600">
-              Sign in to your healthcare account
+            <CardDescription className="text-lg text-gray-600 mb-2">
+              {t('auth.welcomeBack')} {t('app.title')}
             </CardDescription>
           </CardHeader>
-          
           <CardContent>
             <Tabs defaultValue={defaultRole} className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1 rounded-xl">
                 <TabsTrigger value="patient" className="flex items-center gap-2 rounded-lg py-3 px-4 data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                  <UserCircle className="w-4 h-4" />
-                  Patient
+                  <UserCircle className="w-4 h-4" /> {t('roles.patient')}
                 </TabsTrigger>
                 <TabsTrigger value="doctor" className="flex items-center gap-2 rounded-lg py-3 px-4 data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                  <Stethoscope className="w-4 h-4" />
-                  Doctor
+                  <Stethoscope className="w-4 h-4" /> {t('roles.doctor')}
                 </TabsTrigger>
               </TabsList>
-              
               <TabsContent value="patient" className="space-y-6 mt-6">
-                <GoogleAuthButton 
-                  role="patient" 
-                  isLoading={isLoading} 
-                  setIsLoading={setIsLoading}
-                  mode="login"
-                />
-                
+                <GoogleAuthButton role="patient" isLoading={isLoading} setIsLoading={setIsLoading} mode="login" />
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t border-gray-200" />
@@ -190,48 +144,22 @@ const Login = () => {
                     <span className="bg-white px-2 text-gray-500">Or continue with email</span>
                   </div>
                 </div>
-
                 <form onSubmit={(e) => handleSubmit(e, "patient")} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="patient-email" className="text-sm font-medium text-gray-700">Email</Label>
-                    <Input 
-                      id="patient-email" 
-                      type="email" 
-                      placeholder="patient@example.com" 
-                      required 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                    />
+                    <Label htmlFor="patient-email" className="text-sm font-medium text-gray-700">{t('auth.email')}</Label>
+                    <Input id="patient-email" type="email" placeholder="patient@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="patient-password" className="text-sm font-medium text-gray-700">Password</Label>
-                    <Input 
-                      id="patient-password" 
-                      type="password" 
-                      required 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                    />
+                    <Label htmlFor="patient-password" className="text-sm font-medium text-gray-700">{t('auth.password')}</Label>
+                    <Input id="patient-password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl" />
                   </div>
-                  <Button 
-                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02]" 
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Signing in..." : "Sign In as Patient"}
+                  <Button className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg" disabled={isLoading}>
+                    {isLoading ? t('auth.signingIn') : t('auth.signInAs', { role: t('roles.patient') })}
                   </Button>
                 </form>
               </TabsContent>
-              
               <TabsContent value="doctor" className="space-y-6 mt-6">
-                <GoogleAuthButton 
-                  role="doctor" 
-                  isLoading={isLoading} 
-                  setIsLoading={setIsLoading}
-                  mode="login"
-                />
-                
+                <GoogleAuthButton role="doctor" isLoading={isLoading} setIsLoading={setIsLoading} mode="login" />
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t border-gray-200" />
@@ -240,50 +168,30 @@ const Login = () => {
                     <span className="bg-white px-2 text-gray-500">Or continue with email</span>
                   </div>
                 </div>
-
                 <form onSubmit={(e) => handleSubmit(e, "doctor")} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="doctor-email" className="text-sm font-medium text-gray-700">Email</Label>
-                    <Input 
-                      id="doctor-email" 
-                      type="email" 
-                      placeholder="doctor@hospital.com" 
-                      required 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                    />
+                    <Label htmlFor="doctor-email" className="text-sm font-medium text-gray-700">{t('auth.email')}</Label>
+                    <Input id="doctor-email" type="email" placeholder="doctor@hospital.com" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="doctor-password" className="text-sm font-medium text-gray-700">Password</Label>
-                    <Input 
-                      id="doctor-password" 
-                      type="password" 
-                      required 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                    />
+                    <Label htmlFor="doctor-password" className="text-sm font-medium text-gray-700">{t('auth.password')}</Label>
+                    <Input id="doctor-password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl" />
                   </div>
-                  <Button 
-                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02]" 
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Signing in..." : "Sign In as Doctor"}
+                  <Button className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg" disabled={isLoading}>
+                    {isLoading ? t('auth.signingIn') : t('auth.signInAs', { role: t('roles.doctor') })}
                   </Button>
                 </form>
               </TabsContent>
             </Tabs>
-            
             <div className="mt-8 text-center space-y-4">
               <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
+                {t('auth.noAccount')}{" "}
                 <Link to={`/register?role=${defaultRole}`} className="text-blue-600 hover:text-blue-700 font-medium hover:underline">
-                  Register here
+                  {t('auth.signUp')}
                 </Link>
               </p>
               <Link to="/" className="text-sm text-gray-500 hover:text-gray-700 hover:underline block">
-                Back to Home
+                {t('navigation.home')}
               </Link>
             </div>
           </CardContent>

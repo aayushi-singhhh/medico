@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Brain, Users, Heart, Activity, MapPin, UserCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const HeroSection = () => {
+  const { t } = useTranslation();
+  
   return (
     <section className="min-h-screen flex items-center bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700">
       <div className="container mx-auto px-6 py-20">
@@ -10,33 +13,28 @@ const HeroSection = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-6 py-2 mb-8 backdrop-blur-sm">
             <Heart className="w-4 h-4 text-red-400" />
-            <span className="text-sm font-medium">Trusted by 50,000+ patients worldwide</span>
+            <span className="text-sm font-medium">{t('hero.badge')}</span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            The Future of{" "}
-            <span className="text-cyan-400">
-              AI Healthcare
-            </span>
-            {" "}is Here
+            {t('hero.title')}
           </h1>
           
           <p className="text-xl md:text-2xl mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Experience revolutionary AI-powered diagnostics that provide instant, accurate health insights. 
-            Connect with healthcare professionals through our comprehensive medical platform.
+            {t('hero.subtitle')}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
             <Link to="/prediction-results">
               <Button className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-3 rounded-full">
-                Try AI Diagnosis
+                {t('hero.tryAiDiagnosis')}
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
             <Link to="/login?role=patient">
               <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-full">
                 <UserCircle className="mr-2 w-4 h-4" />
-                Patient Login
+                {t('hero.patientLogin')}
               </Button>
             </Link>
             <Link to="/nearby-services">
@@ -45,7 +43,7 @@ const HeroSection = () => {
                 className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-full"
               >
                 <MapPin className="mr-2 w-4 h-4" />
-                Find Nearby Services
+                {t('hero.findNearbyServices')}
               </Button>
             </Link>
           </div>

@@ -2,43 +2,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserCircle, Stethoscope, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const RoleSelection = () => {
+  const { t } = useTranslation();
   const roles = [
     {
       icon: UserCircle,
-      title: "Patient Portal",
-      description: "Take control of your health with AI-powered insights and comprehensive medical record management",
-      features: [
-        "Upload medical reports & images instantly",
-        "AI disease risk assessment in seconds", 
-        "Personal health timeline with trends",
-        "Download complete medical history"
-      ],
+      title: t('roleSelection.patient.title'),
+      description: t('roleSelection.patient.description'),
+      features: t('roleSelection.patient.features', { returnObjects: true }) as string[],
       route: "/login?role=patient"
     },
     {
       icon: Stethoscope,
-      title: "Doctor Dashboard",
-      description: "Enhance your practice with AI diagnostic assistance and comprehensive patient management tools",
-      features: [
-        "View complete patient medical histories",
-        "AI diagnostic assistance & recommendations",
-        "Add detailed consultation notes",
-        "Generate comprehensive patient reports"
-      ],
+      title: t('roleSelection.doctor.title'),
+      description: t('roleSelection.doctor.description'),
+      features: t('roleSelection.doctor.features', { returnObjects: true }) as string[],
       route: "/login?role=doctor"
     },
     {
       icon: Building2,
-      title: "Hospital Admin",
-      description: "Streamline healthcare operations with advanced analytics and comprehensive system management",
-      features: [
-        "Manage doctors & patients efficiently",
-        "Real-time platform monitoring",
-        "Advanced analytics dashboard",
-        "System administration tools"
-      ],
+      title: t('roleSelection.admin.title'),
+      description: t('roleSelection.admin.description'),
+      features: t('roleSelection.admin.features', { returnObjects: true }) as string[],
       route: "/admin-dashboard"
     }
   ];
@@ -48,10 +35,10 @@ const RoleSelection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Choose Your Role
+            {t('roleSelection.title')}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Access tailored healthcare solutions designed specifically for your role and responsibilities.
+            {t('roleSelection.subtitle')}
           </p>
         </div>
         
@@ -115,7 +102,7 @@ const RoleSelection = () => {
                   
                   <Link to={role.route}>
                     <Button className={`w-full ${colors.button} text-white font-semibold py-3 transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl`}>
-                      Access {role.title}
+                      {t('roleSelection.getStarted')}
                     </Button>
                   </Link>
                 </CardContent>

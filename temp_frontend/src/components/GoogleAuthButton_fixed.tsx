@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { signInWithPopup } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { auth, googleProvider, db } from "../../firebase";
+import { auth, db } from "../firebase";
+import { GoogleAuthProvider } from "firebase/auth";
+
+// Create a Google Auth Provider instance
+const googleProvider = new GoogleAuthProvider();
 import { useNavigate } from "react-router-dom";
 
 interface GoogleAuthButtonProps {

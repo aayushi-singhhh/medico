@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Stethoscope } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "../contexts/AuthContext";
 
